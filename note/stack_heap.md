@@ -46,3 +46,50 @@ s.push_str(", world!"); // push_str() 在字符串后追加字面值
 println!("{}", s); // 将打印 `hello, world!`
 }
 ``` 
+
+有一段代码：  
+
+```rust
+let s1 = String::from("hello");
+let s2 = s1;
+```
+
+
+把 s1 的内容拷贝一份赋值给 s2，实际上，并不是这样。之前也提到了，对于基本类型（存储在栈上），Rust 会自动拷贝，但是 String 不是基本类型，而且是存储在堆上的，因此不能自动拷贝。
+
+实际上， String 类型是一个复杂类型，由存储在栈中的堆指针、字符串长度、字符串容量共同组成，其中堆指针是最重要的，它指向了真实存储字符串内容的堆内存，至于长度和容量，如果你有 Go 语言的经验，这里就很好理解：容量是堆内存分配空间的大小，长度是目前已经使用的大小   ///感觉像是抄go语言的  
+
+
+Rust 这样解决问题：当 s1 赋予 s2 后，Rust 认为 s1 不再有效，因此也无需在 s1 离开作用域后 drop 任何东西，这就是把所有权从 s1 转移给了 s2，s1 在被赋予 s2 后就马上失效了。  
+
+
+```rust
+let s1 = String::from("hello");
+let s2 = s1;
+
+println!("{}, world!", s1);
+```
+
+
+由于 Rust 禁止你使用无效的引用，你会看到以下的错误：
+
+
+```rust
+error[E0382]: use of moved value: `s1`
+ --> src/main.rs:5:28
+  |
+3 |     let s2 = s1;
+  |         -- value moved here
+4 |
+5 |     println!("{}, world!", s1);
+  |                            ^^ value used here after move
+  |
+  = note: move occurs because `s1` has type `std::string::String`, which does
+  not implement the `Copy` trait
+```
+  
+
+
+1. Rust 中每一个值都被一个变量所拥有，该变量被称为值的所有者
+2. 一个值同时只能被一个变量所拥有，或者说一个值只能拥有一个所有者
+3. 当所有者(变量)离开作用域范围时，这个值将被丢弃(drop)
