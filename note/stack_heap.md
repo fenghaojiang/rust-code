@@ -94,3 +94,27 @@ error[E0382]: use of moved value: `s1`
 2. 一个值同时只能被一个变量所拥有，或者说一个值只能拥有一个所有者
 3. 当所有者(变量)离开作用域范围时，这个值将被丢弃(drop)  
 
+```rust
+fn main() {
+    let x: &str = "hello, world";
+    let y = x;
+    println!("{},{}",x,y);
+}
+```  
+
+
+这段代码和之前的 String 有一个本质上的区别：在 String 的例子中 s1 持有了通过String::from("hello") 创建的值的所有权，而这个例子中，x 只是引用了存储在二进制中的字符串 "hello, world"，并没有持有所有权。   
+
+**Rust永远不会创建数据的“深拷贝”，所有自动的复制都不是深拷贝  **
+
+深拷贝： 
+```rust
+let s1 = String::from("hello");
+let s2 = s1.clone();
+
+println!("s1 = {}, s2 = {}", s1, s2);
+```
+
+
+
+
