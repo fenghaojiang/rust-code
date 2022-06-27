@@ -115,6 +115,24 @@ let s2 = s1.clone();
 println!("s1 = {}, s2 = {}", s1, s2);
 ```
 
+## NLL
+对于这种编译器优化行为，Rust 专门起了一个名字 —— Non-Lexical Lifetimes(NLL)，专门用于找到某个引用在作用域(})结束前就不再被使用的代码位置。
 
+虽然这种借用错误有的时候会让我们很郁闷，但是你只要想想这是 Rust 提前帮你发现了潜在的 BUG，其实就开心了，虽然减慢了开发速度，但是从长期来看，大幅减少了后续开发和运维成本。
+
+
+## 悬垂引用   
+
+编译错误：
+```rust
+fn main() {
+  let reference_to_nothing = dangle();
+}
+
+fn dangle() -> &String {
+  let s = String::from("hello");
+  &s
+}
+```
 
 
