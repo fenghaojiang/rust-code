@@ -1,3 +1,7 @@
+
+
+
+#[derive(Debug)]
 struct User {
     active: bool,
     username: String,
@@ -17,4 +21,5 @@ fn main() {
         email: String::from("user2"),
         ..user1
     };
+    println!("{:?}", user2)
 }
